@@ -1,19 +1,18 @@
 <?php
 require_once(__DIR__ . '/json-feed.php');
 
-new JSONFeed(return array(
-		'url'      => '^api/deals-feed\.json', // regex -- fed directly into add_rewrite_rule()
-		'get_data' => 'get_the_feed_data',     // a callabale which returns an array (or an object) -- will be json_encoded
+new JSONFeed(array(
+	'url'      => '^api/deals-feed\.json', // regex -- fed directly into add_rewrite_rule()
+	'get_data' => 'get_the_feed_data',     // a callabale which returns an array (or an object) -- will be json_encoded
 
-		# OPTIONAL:
+	# OPTIONAL:
 
-		// 'key'           => 'json-feed-' . ($UID)++, // must not be empty and contain only alphanumeric, _ or - chars
-		// 'post_type'     => 'post',                  // the post type to attach the last_modified handler -- set to false to not attach actions
-		// 'edit_posts'    => 'edit_posts',            // publish capability
-		// 'delete_posts'  => 'delete_posts',          // trash capability
-		// 'cache_timeout' => 3600,                    // cache timeout in seconds -- set to false to disable it
-	);
-});
+	// 'key'           => 'json-feed-' . ($UID)++, // must not be empty and contain only alphanumeric, _ or - chars
+	// 'post_type'     => 'post',                  // the post type to attach the last_modified handler -- set to false to not attach actions
+	// 'edit_posts'    => 'edit_posts',            // publish capability
+	// 'delete_posts'  => 'delete_posts',          // trash capability
+	// 'cache_timeout' => 3600,                    // cache timeout in seconds -- set to false to disable it
+));
 
 function get_the_feed_data($url, $key, $last_modified) {
 	# $url and $key  are useful if you've got multiple feeds
