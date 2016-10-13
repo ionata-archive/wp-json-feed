@@ -220,7 +220,7 @@ class JSONFeed
     header( 'Cache-Control: public' );
 
     // check if page is changed. If not, send 304 and exit
-    if ( ( $if_modified_since !== false && strtotime( $if_modified_since ) == $last_modified ) || $etag_header == $etag ) {
+    if ( ( $if_modified_since !== false && strtotime( $if_modified_since ) >= $last_modified ) || $etag_header == $etag ) {
       header( 'HTTP/1.1 304 Not Modified' );
       header( 'Connection: close' );
       exit;
