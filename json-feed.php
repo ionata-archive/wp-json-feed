@@ -269,6 +269,7 @@ class JSONFeed
 
       if ( empty( $last_modified ) ) {
         $last_modified = current_time( 'timestamp' );
+        $this->update_last_modified_variable(0, null);
       }
 
       // allow time_offset reset parameter
