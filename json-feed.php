@@ -28,6 +28,7 @@ class JSONFeed
       'delete_posts'  => 'delete_posts',          // trash capability
       // 'cache_timeout' => false,                   // cache timeout -- false == no cache, a number = seconds until flushed
       'cache_timeout' => 3600,                    // cache timeout -- 3600 == an hour
+      'cache_key'     => null,                    // a cache key to allow different results for the same key
     );
 
     $this->args = wp_parse_args( $args, $defaults );
@@ -104,6 +105,24 @@ class JSONFeed
   {
 
     return $this->get('url');
+
+  }
+
+  /**
+   * Return the args url
+   *
+   * @return string
+   */
+  function get_cache_key ()
+  {
+
+    $cache_key = $this->get('cache_key', '');
+
+    if ( $cache_key ) {
+      $cache_key = '-' . $cache_key;
+    }
+
+    return $this->get_key( '-cache' . $cache_key );
 
   }
 
@@ -185,7 +204,7 @@ class JSONFeed
 
     update_option( $this->get_key( '-last-modified' ), current_time( 'timestamp' ) );
 
-    delete_transient( $this->get_key( '-cache' ) );
+    delete_transient( $this->get_cache_key() );
 
   }
 
@@ -236,7 +255,7 @@ class JSONFeed
       if ( $this->get('cache_timeout') === false ) {
         $data = false;
       } else {
-        $key = $this->get_key( '-cache' );
+        $key = $this->get_cache_key();
         $data = get_transient( $key );
       }
 
