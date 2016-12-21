@@ -285,8 +285,8 @@ class JSONFeed
   function render_the_feed ()
   {
 
-    do_action( 'will_render_the_feed_' . $this->get_key(), &$this );
-    do_action( 'will_render_the_feed', &$this, $this->get_key() );
+    do_action( 'will_render_the_feed_' . $this->get_key(), $this );
+    do_action( 'will_render_the_feed', $this, $this->get_key() );
 
     if ( headers_sent() ) {
       error_log('ERROR: headers already sent [' . __CLASS__ . ']');
@@ -314,8 +314,8 @@ class JSONFeed
 
     $this->output_data( $data );
 
-    do_action( 'did_render_the_feed_' . $this->get_key(), &$this );
-    do_action( 'did_render_the_feed', &$this, $this->get_key() );
+    do_action( 'did_render_the_feed_' . $this->get_key(), $this );
+    do_action( 'did_render_the_feed', $this, $this->get_key() );
 
   }
 
