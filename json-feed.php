@@ -222,6 +222,11 @@ class JSONFeed
 
     // get a unique hash
     $etag = md5( $last_modified . $hash_entropy_addon );
+    $etag = apply_filters('json_feed_etag', $etag, $this->get_key(), $last_modified, $hash_entropy_addon);
+
+    // get gmdate
+    $gmdate = gmdate( 'D, d M Y H:i:s', $last_modified ) . ' GMT';
+    $gmdate = apply_filters('json_feed_last_modified_gmdate', $gmdate, $this->get_key() );
 
     // get the HTTP_IF_MODIFIED_SINCE header if set
     $if_modified_since = ( isset( $_SERVER['HTTP_IF_MODIFIED_SINCE'] ) ? $_SERVER['HTTP_IF_MODIFIED_SINCE'] : false );
@@ -230,9 +235,9 @@ class JSONFeed
     $etag_header = ( isset( $_SERVER['HTTP_IF_NONE_MATCH'] ) ? trim( preg_replace( '#(W/)?(\\\")?([^\\\"]+)(\\\")?#i', '$3', $_SERVER['HTTP_IF_NONE_MATCH'] ) ) : false );
 
     // set last-modified header
-    header( 'Last-Modified: ' . gmdate( 'D, d M Y H:i:s', $last_modified ) . ' GMT' );
+    header( 'Last-Modified: ' . $gmdate );
 
-    // set etag-header
+    // set etag header
     header( 'ETag: "' . $etag . '"' );
 
     // make sure caching is turned on
@@ -240,6 +245,9 @@ class JSONFeed
 
     // check if page is changed. If not, send 304 and exit
     if ( ( $if_modified_since !== false && strtotime( $if_modified_since ) >= $last_modified ) || $etag_header == $etag ) {
+
+      do_action('json_feed_not_modified', $this->get_key());
+
       header( 'HTTP/1.1 304 Not Modified' );
       header( 'Connection: close' );
       exit;
@@ -277,6 +285,9 @@ class JSONFeed
   function render_the_feed ()
   {
 
+    do_action( 'will_render_the_feed_' . $this->get_key(), &$this );
+    do_action( 'will_render_the_feed', &$this, $this->get_key() );
+
     if ( headers_sent() ) {
       error_log('ERROR: headers already sent [' . __CLASS__ . ']');
       exit;
@@ -300,6 +311,16 @@ class JSONFeed
 
     # Get the data
     $data = $this->get_the_data();
+
+    $this->output_data( $data );
+
+    do_action( 'did_render_the_feed_' . $this->get_key(), &$this );
+    do_action( 'did_render_the_feed', &$this, $this->get_key() );
+
+  }
+
+  function output_data ( $data )
+  {
 
     # Set JSON headers
     header( 'Content-type: text/json' );
