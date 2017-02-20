@@ -3,16 +3,16 @@
  * JSONFeed
  *
  * @author Evo Stamatov <evo@ionata.com.au>
- * @version 0.1.2
+ * @version 0.1.3
  *
  * @created 2013-02-08
- * @lastUpdated 2016-12-21
+ * @lastUpdated 2017-02-20
  */
 
 class JSONFeed
 {
 
-  const VERSION = '0.1.2';
+  const VERSION = '0.1.3';
 
   function __construct( $args = array() )
   {
