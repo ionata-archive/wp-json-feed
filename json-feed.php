@@ -109,7 +109,7 @@ class JSONFeed
   }
 
   /**
-   * Return the args url
+   * Return the args cache_key
    *
    * @return string
    */
