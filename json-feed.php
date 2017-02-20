@@ -202,7 +202,7 @@ class JSONFeed
 
     define( 'DEALS_LAST_MODIFIED_UPDATED', true );
 
-    update_option( $this->get_key( '-last-modified' ), current_time( 'timestamp' ) );
+    update_option( $this->get_key( '-last-modified' ), current_time( 'timestamp', $gmt = 1 ) );
 
     delete_transient( $this->get_cache_key() );
 
@@ -298,7 +298,7 @@ class JSONFeed
       $last_modified = $this->get_last_modified();
 
       if ( empty( $last_modified ) ) {
-        $last_modified = current_time( 'timestamp' );
+        $last_modified = current_time( 'timestamp', $gmt = 1 );
         $this->update_last_modified_variable(0, null);
       }
 
