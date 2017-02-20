@@ -127,6 +127,18 @@ class JSONFeed
   }
 
   /**
+   * Return the cache keys array from the db
+   *
+   * Each key is a cache key
+   *
+   * @return array
+   */
+  function get_cache_keys ()
+  {
+    return get_option( $this->get_key( '-cache-keys' ), array() );
+  }
+
+  /**
    * Get the last modified value from the db
    *
    * @return integer|null The timestamp
@@ -204,10 +216,33 @@ class JSONFeed
 
     update_option( $this->get_key( '-last-modified' ), current_time( 'timestamp', $gmt = 1 ) );
 
-    delete_transient( $this->get_cache_key() );
+    $cache_keys = array_keys( $this->get_cache_keys() );
+
+    foreach ( $cache_keys as $key ) {
+      delete_transient( $key );
+    }
 
   }
 
+  /**
+   * Update the options variable for proper cache flushing
+   *
+   * @param  string $new_key The new key to add
+   *
+   * @return void
+   */
+  function update_cache_keys ( $new_key )
+  {
+
+    $cache_keys = $this->get_cache_keys();
+
+    if ( ! isset( $cache_keys[$new_key] ) ) {
+      $cache_keys[$new_key] = true;
+
+      update_option( $this->get_key( '-cache-keys' ), $cache_keys, $autoload = 'no' );
+    }
+
+  }
 
   /**
    * A snippet for properly managing ETag headers
@@ -264,6 +299,7 @@ class JSONFeed
         $data = false;
       } else {
         $key = $this->get_cache_key();
+        $this->update_cache_keys( $key );
         $data = get_transient( $key );
       }
 
